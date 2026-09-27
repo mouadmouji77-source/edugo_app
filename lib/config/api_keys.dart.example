@@ -1,0 +1,15 @@
+// ⚠️ IMPORTANT: Copiez ce fichier vers api_keys.dart et remplissez vos clés API
+// Ne commitez JAMAIS api_keys.dart sur GitHub !
+
+class ApiKeys {
+  // Groq API Key for AI features
+  // Obtenez votre clé sur: https://console.groq.com/
+  static const String groqApiKey = 'VOTRE_CLE_GROQ_ICI';
+  
+  // Groq API endpoint
+  static const String groqBaseUrl = 'https://api.groq.com/openai/v1';
+  
+  // Model to use (llama-3.3-70b-versatile is fast and capable)
+  static const String groqModel = 'llama-3.3-70b-versatile';
+}
+

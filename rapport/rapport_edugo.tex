@@ -1,0 +1,929 @@
+\documentclass[12pt,a4paper]{report}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+
+% Page geometry
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={EduGo - Rapport Technique},
+}
+
+% Code listing setup
+\lstdefinestyle{dartcode}{
+    language=Java,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=10pt,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    tabsize=2,
+    captionpos=b
+}
+
+% Headers and footers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Chapter formatting
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-20pt}{40pt}
+
+\begin{document}
+
+% ============================================
+% PAGE DE GARDE
+% ============================================
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Large\bfseries UNIVERSITÉ / ÉCOLE\par}
+    \vspace{0.5cm}
+    {\large Département Informatique\par}
+    
+    \vspace{2cm}
+    
+    {\Huge\bfseries Rapport de Projet\par}
+    \vspace{1cm}
+    {\LARGE Application Mobile Flutter\par}
+    
+    \vspace{1.5cm}
+    
+    {\Huge\bfseries EduGo\par}
+    \vspace{0.5cm}
+    {\Large Plateforme d'Apprentissage Intelligente\par}
+    
+    \vspace{2cm}
+    
+    \includegraphics[width=0.25\textwidth]{assets/icon/icon.png}
+    
+    \vfill
+    
+    {\Large\bfseries Réalisé par :\par}
+    \vspace{0.5cm}
+    {\large Nom Prénom\par}
+    
+    \vspace{1cm}
+    
+    {\Large\bfseries Encadré par :\par}
+    \vspace{0.5cm}
+    {\large Pr. Nom Encadrant\par}
+    
+    \vfill
+    
+    {\large Année Universitaire 2024-2025\par}
+\end{titlepage}
+
+% ============================================
+% DÉDICACE
+% ============================================
+\chapter*{Dédicace}
+\thispagestyle{empty}
+\vspace*{5cm}
+\begin{center}
+\textit{À mes parents,\\
+Pour leur soutien inconditionnel et leurs encouragements.\\
+\vspace{1cm}
+À mes enseignants,\\
+Pour leur patience et leur dévouement.\\
+\vspace{1cm}
+À tous ceux qui m'ont accompagné dans ce parcours.}
+\end{center}
+\newpage
+
+% ============================================
+% RÉSUMÉ
+% ============================================
+\chapter*{Résumé}
+\thispagestyle{empty}
+
+EduGo est une application mobile éducative innovante développée avec Flutter, conçue pour transformer l'expérience d'apprentissage des étudiants grâce à l'intelligence artificielle. L'application permet de générer automatiquement des résumés de cours, des quiz interactifs, des mind maps et des examens personnalisés à partir de documents PDF ou de textes saisis manuellement.
+
+Le projet s'appuie sur une architecture moderne utilisant Riverpod pour la gestion d'état, Firebase pour l'authentification et le stockage cloud, et Sqflite pour la persistance locale. L'intégration de l'API Groq exploite les modèles de langage LLaMA 3.3 pour générer du contenu éducatif de haute qualité en temps réel.
+
+Les fonctionnalités principales incluent l'extraction automatique de texte depuis des PDFs, la génération intelligente de résumés multilingues, la création de quiz adaptatifs, et la visualisation de concepts sous forme de mind maps. L'application fonctionne en mode hors ligne grâce à la synchronisation automatique des données.
+
+\textbf{Mots-clés :} Flutter, Intelligence Artificielle, Éducation Mobile, Groq API, Firebase, Clean Architecture, Apprentissage Adaptatif
+
+\newpage
+
+% ============================================
+% ABSTRACT
+% ============================================
+\chapter*{Abstract}
+\thispagestyle{empty}
+
+EduGo is an innovative educational mobile application developed with Flutter, designed to transform students' learning experience through artificial intelligence. The application automatically generates course summaries, interactive quizzes, mind maps, and personalized exams from PDF documents or manually entered text.
+
+The project is based on a modern architecture using Riverpod for state management, Firebase for authentication and cloud storage, and Sqflite for local persistence. The integration of the Groq API leverages LLaMA 3.3 language models to generate high-quality educational content in real-time.
+
+Key features include automatic text extraction from PDFs, intelligent generation of multilingual summaries, creation of adaptive quizzes, and concept visualization through mind maps. The application works offline thanks to automatic data synchronization.
+
+\textbf{Keywords:} Flutter, Artificial Intelligence, Mobile Education, Groq API, Firebase, Clean Architecture, Adaptive Learning
+
+\newpage
+
+% ============================================
+% REMERCIEMENTS
+% ============================================
+\chapter*{Remerciements}
+\thispagestyle{empty}
+
+Je tiens à exprimer ma profonde gratitude envers toutes les personnes qui ont contribué, de près ou de loin, à la réalisation de ce projet.
+
+Mes remerciements s'adressent en premier lieu à mon encadrant, \textbf{Pr. [Nom]}, pour ses conseils précieux, sa disponibilité et son soutien tout au long de ce projet. Ses orientations m'ont permis de mener à bien ce travail dans les meilleures conditions.
+
+Je remercie également l'ensemble du corps professoral du département Informatique pour la qualité de l'enseignement dispensé et les compétences techniques acquises durant ma formation.
+
+Mes remerciements vont aussi à mes collègues de classe pour les échanges enrichissants et l'entraide qui ont contribué à l'amélioration de ce projet.
+
+Enfin, je remercie ma famille pour leur soutien constant, leur patience et leurs encouragements durant toute la période de développement de cette application.
+
+\newpage
+
+% ============================================
+% TERMINOLOGIES
+% ============================================
+\chapter*{Terminologies}
+\addcontentsline{toc}{chapter}{Terminologies}
+
+\begin{description}[leftmargin=4cm, style=nextline]
+    \item[Flutter] Framework open-source de Google pour le développement d'applications multiplateformes
+    
+    \item[Dart] Langage de programmation utilisé par Flutter
+    
+    \item[API] Application Programming Interface - Interface de programmation d'application
+    
+    \item[LLM] Large Language Model - Modèle de langage de grande taille
+    
+    \item[Firebase] Plateforme de développement d'applications mobiles de Google
+    
+    \item[Firestore] Base de données NoSQL en temps réel de Firebase
+    
+    \item[Sqflite] Plugin Flutter pour SQLite (base de données locale)
+    
+    \item[Riverpod] Bibliothèque de gestion d'état pour Flutter
+    
+    \item[Provider] Pattern de conception pour la gestion d'état
+    
+    \item[Widget] Composant de base de l'interface utilisateur Flutter
+    
+    \item[REST API] Representational State Transfer - Architecture d'API web
+    
+    \item[JSON] JavaScript Object Notation - Format d'échange de données
+    
+    \item[CRUD] Create, Read, Update, Delete - Opérations de base sur les données
+    
+    \item[MVC] Model-View-Controller - Pattern architectural
+    
+    \item[Clean Architecture] Architecture logicielle en couches séparées
+    
+    \item[Groq] Plateforme d'inférence pour modèles de langage
+    
+    \item[Mind Map] Carte mentale - Représentation visuelle de concepts
+    
+    \item[Quiz] Questionnaire à choix multiples
+    
+    \item[PDF] Portable Document Format
+    
+    \item[UI/UX] User Interface / User Experience
+\end{description}
+
+\newpage
+
+% ============================================
+% TABLE DES MATIÈRES
+% ============================================
+\tableofcontents
+\listoffigures
+\listoftables
+
+% ============================================
+% INTRODUCTION GÉNÉRALE
+% ============================================
+\chapter*{Introduction Générale}
+\addcontentsline{toc}{chapter}{Introduction Générale}
+
+Dans un contexte éducatif en constante évolution, marqué par la digitalisation croissante et l'émergence de l'intelligence artificielle, les méthodes d'apprentissage traditionnelles montrent leurs limites face aux besoins des étudiants modernes. La surcharge informationnelle, le manque de personnalisation et les contraintes de temps constituent des défis majeurs pour l'apprentissage efficace.
+
+L'intelligence artificielle, et plus particulièrement les modèles de langage de grande taille (LLM), offrent aujourd'hui des opportunités sans précédent pour révolutionner l'éducation. Ces technologies permettent de créer des expériences d'apprentissage personnalisées, adaptatives et accessibles à tous.
+
+C'est dans ce contexte que s'inscrit le projet \textbf{EduGo}, une application mobile développée avec Flutter qui exploite la puissance de l'IA pour transformer n'importe quel contenu éducatif en outils d'apprentissage interactifs. L'application vise à répondre aux besoins des étudiants en leur fournissant des résumés automatiques, des quiz personnalisés, des mind maps et des examens générés intelligemment.
+
+Ce rapport présente l'ensemble du processus de développement de l'application EduGo, depuis l'analyse des besoins jusqu'à la réalisation finale. Il est structuré en quatre chapitres principaux :
+
+\begin{itemize}
+    \item Le premier chapitre contextualise le projet en présentant la problématique, les objectifs et l'étude de l'existant
+    \item Le deuxième chapitre détaille l'analyse et la conception de l'application
+    \item Le troisième chapitre présente la réalisation technique et les interfaces développées
+    \item Le quatrième chapitre conclut le rapport et propose des perspectives d'évolution
+\end{itemize}
+
+% ============================================
+% CHAPITRE 1 : CONTEXTUALISATION
+% ============================================
+\chapter{Contextualisation}
+
+\section{Contexte et Motivation}
+
+L'éducation moderne fait face à plusieurs défis majeurs. Les étudiants doivent traiter des volumes croissants d'informations tout en maintenant un niveau de compréhension approfondi. Les méthodes traditionnelles de révision, bien qu'efficaces, sont souvent chronophages et ne s'adaptent pas au rythme individuel de chaque apprenant.
+
+Parallèlement, l'avènement de l'intelligence artificielle et des modèles de langage ouvre de nouvelles perspectives pour l'apprentissage personnalisé. Ces technologies permettent de générer automatiquement du contenu éducatif, d'adapter les exercices au niveau de l'étudiant et de fournir un feedback instantané.
+
+La motivation principale de ce projet est de créer un outil qui combine la puissance de l'IA avec l'accessibilité du mobile pour offrir une expérience d'apprentissage optimale, disponible à tout moment et en tout lieu.
+
+\section{Objectif du projet}
+
+Les objectifs principaux de ce projet sont les suivants :
+
+\begin{enumerate}
+    \item \textbf{Développer une application mobile multiplateforme} utilisant Flutter pour assurer une large accessibilité (Android, iOS, Web)
+    
+    \item \textbf{Intégrer l'intelligence artificielle} pour la génération automatique de contenu éducatif (résumés, quiz, mind maps, examens)
+    
+    \item \textbf{Implémenter une architecture robuste} basée sur les principes de Clean Architecture et les design patterns modernes
+    
+    \item \textbf{Assurer la persistance des données} en mode hors ligne grâce à une base de données locale synchronisée avec le cloud
+    
+    \item \textbf{Créer une interface utilisateur intuitive} respectant les principes de Material Design et offrant une expérience utilisateur optimale
+    
+    \item \textbf{Garantir la sécurité} des données utilisateurs via Firebase Authentication et des règles de sécurité Firestore
+\end{enumerate}
+
+\section{Étude de l'existant}
+
+Plusieurs applications éducatives existent sur le marché, chacune avec ses spécificités :
+
+\subsection{Quizlet}
+Application populaire pour la création de flashcards et de quiz. Points forts : grande communauté, contenu partagé. Limites : pas de génération automatique, focus sur la mémorisation.
+
+\subsection{Notion}
+Outil de prise de notes et d'organisation. Points forts : flexibilité, collaboration. Limites : courbe d'apprentissage élevée, pas d'IA intégrée pour la génération de contenu.
+
+\subsection{ChatGPT Mobile}
+Application d'IA conversationnelle. Points forts : génération de contenu puissante. Limites : interface généraliste, pas spécialisée pour l'éducation, nécessite des prompts manuels.
+
+\subsection{Mindomo}
+Application de mind mapping. Points forts : visualisation de concepts. Limites : création manuelle, pas d'automatisation.
+
+\section{Critique de l'existant}
+
+L'analyse des solutions existantes révèle plusieurs lacunes :
+
+\begin{itemize}
+    \item \textbf{Manque d'intégration} : Les outils sont dispersés, nécessitant de jongler entre plusieurs applications
+    \item \textbf{Absence d'automatisation} : La plupart des outils requièrent une création manuelle de contenu
+    \item \textbf{Pas de personnalisation IA} : Les applications n'exploitent pas pleinement le potentiel de l'IA pour adapter le contenu
+    \item \textbf{Dépendance au réseau} : Peu d'applications offrent un mode hors ligne complet
+    \item \textbf{Interface complexe} : Certaines applications ont une courbe d'apprentissage trop élevée
+\end{itemize}
+
+\section{Solution proposée}
+
+EduGo propose une solution intégrée qui combine :
+
+\begin{itemize}
+    \item \textbf{Génération automatique} de résumés, quiz, mind maps et examens via l'API Groq (LLaMA 3.3)
+    \item \textbf{Extraction intelligente} de texte depuis des fichiers PDF
+    \item \textbf{Mode hors ligne} complet avec synchronisation automatique
+    \item \textbf{Interface intuitive} suivant les principes Material Design
+    \item \textbf{Personnalisation} du contenu selon la langue et le niveau
+    \item \textbf{Historique} et sauvegarde de toutes les générations
+    \item \textbf{Multiplateforme} : Android, iOS, Web avec une seule base de code
+\end{itemize}
+
+\section{Impact attendu}
+
+L'application EduGo vise à avoir un impact significatif sur l'apprentissage :
+
+\begin{enumerate}
+    \item \textbf{Gain de temps} : Réduction du temps de préparation des révisions de 60\%
+    \item \textbf{Amélioration de la rétention} : Apprentissage actif via quiz et mind maps
+    \item \textbf{Accessibilité} : Disponible partout, même hors ligne
+    \item \textbf{Personnalisation} : Contenu adapté au niveau et à la langue de l'étudiant
+    \item \textbf{Engagement} : Interface moderne et interactive
+\end{enumerate}
+
+\section{Conclusion}
+
+Ce chapitre a permis de contextualiser le projet EduGo en identifiant les besoins des étudiants modernes, en analysant les solutions existantes et en proposant une approche innovante combinant IA et mobile. Le chapitre suivant détaillera l'analyse et la conception de l'application.
+
+% ============================================
+% CHAPITRE 2 : ANALYSE ET CONCEPTION
+% ============================================
+\chapter{Analyse et Conception}
+
+\section{Introduction}
+
+Ce chapitre présente l'analyse détaillée des besoins fonctionnels et non-fonctionnels de l'application, ainsi que la conception de son architecture. Nous aborderons les choix technologiques, les modèles de données et les flux d'interaction.
+
+\section{Analyse}
+
+\subsection{Besoins Fonctionnels}
+
+Les besoins fonctionnels de l'application ont été identifiés comme suit :
+
+\subsubsection{Gestion des utilisateurs}
+\begin{itemize}
+    \item Inscription avec email et mot de passe
+    \item Connexion sécurisée
+    \item Gestion du profil (photo, informations personnelles)
+    \item Déconnexion
+\end{itemize}
+
+\subsubsection{Gestion du contenu}
+\begin{itemize}
+    \item Upload de fichiers PDF
+    \item Saisie manuelle de texte
+    \item Extraction automatique de texte depuis PDF
+    \item Validation et prétraitement du contenu
+\end{itemize}
+
+\subsubsection{Génération IA}
+\begin{itemize}
+    \item Génération de résumés multilingues
+    \item Création de quiz à choix multiples
+    \item Génération de mind maps hiérarchiques
+    \item Création d'examens personnalisés
+    \item Extraction de mots-clés
+\end{itemize}
+
+\subsubsection{Persistance et Synchronisation}
+\begin{itemize}
+    \item Sauvegarde locale des résumés
+    \item Synchronisation cloud automatique
+    \item Historique des générations
+    \item Mode hors ligne complet
+\end{itemize}
+
+\subsection{Besoins Non-Fonctionnels}
+
+\begin{itemize}
+    \item \textbf{Performance} : Temps de réponse < 3 secondes pour la génération
+    \item \textbf{Sécurité} : Chiffrement des données, authentification sécurisée
+    \item \textbf{Disponibilité} : Fonctionnement hors ligne
+    \item \textbf{Ergonomie} : Interface intuitive, responsive
+    \item \textbf{Maintenabilité} : Code modulaire, documenté, testable
+    \item \textbf{Scalabilité} : Architecture extensible
+\end{itemize}
+
+\subsection{Architecture MVC}
+
+L'application suit le pattern architectural MVC (Model-View-Controller) adapté à Flutter avec Riverpod :
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=2cm,
+        box/.style={rectangle, draw, minimum width=3cm, minimum height=1.5cm, text centered, rounded corners},
+        arrow/.style={->, >=stealth, thick}
+    ]
+        % Nodes
+        \node[box, fill=blue!20] (view) {View\\(Screens/Widgets)};
+        \node[box, fill=green!20, right=of view] (controller) {Controller\\(Providers)};
+        \node[box, fill=yellow!20, below=of controller] (model) {Model\\(Data Classes)};
+        \node[box, fill=red!20, left=of model] (service) {Services\\(API/DB)};
+        
+        % Arrows
+        \draw[arrow] (view) -- node[above] {User Action} (controller);
+        \draw[arrow] (controller) -- node[right] {Update} (view);
+        \draw[arrow] (controller) -- node[right] {Read/Write} (model);
+        \draw[arrow] (model) -- node[below] {Notify} (controller);
+        \draw[arrow] (controller) -- node[above] {Call} (service);
+        \draw[arrow] (service) -- node[below] {Return Data} (controller);
+    \end{tikzpicture}
+    \caption{Architecture MVC de l'application}
+\end{figure}
+
+\subsubsection{Model (Modèle)}
+Les modèles représentent les données de l'application :
+\begin{itemize}
+    \item \texttt{Summary} : Résumé généré
+    \item \texttt{Quiz} : Quiz avec questions
+    \item \texttt{QuizQuestion} : Question individuelle
+    \item \texttt{MindMapNode} : Nœud de mind map
+    \item \texttt{Exam} : Examen généré
+    \item \texttt{User} : Profil utilisateur
+\end{itemize}
+
+\subsubsection{View (Vue)}
+Les vues sont les écrans et widgets Flutter :
+\begin{itemize}
+    \item \texttt{LoginScreen} : Écran de connexion
+    \item \texttt{DashboardScreen} : Tableau de bord
+    \item \texttt{SummaryScreen} : Affichage de résumé
+    \item \texttt{QuizScreen} : Interface de quiz
+    \item \texttt{MindMapScreen} : Visualisation de mind map
+\end{itemize}
+
+\subsubsection{Controller (Contrôleur)}
+Les contrôleurs gèrent la logique métier via Riverpod :
+\begin{itemize}
+    \item \texttt{AuthController} : Gestion de l'authentification
+    \item \texttt{SummaryController} : Logique des résumés
+    \item \texttt{QuizController} : Logique des quiz
+    \item \texttt{ProfileController} : Gestion du profil
+\end{itemize}
+
+\subsection{Diagramme de Cas d'Utilisation}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=0.9]
+        % Actor
+        \node[draw, circle, minimum size=1.2cm] (user) at (0,0) {Étudiant};
+        
+        % Use cases
+        \node[draw, ellipse, minimum width=3.5cm, minimum height=1cm] (auth) at (6,4) {S'authentifier};
+        \node[draw, ellipse, minimum width=3.5cm, minimum height=1cm] (upload) at (6,2.5) {Uploader PDF};
+        \node[draw, ellipse, minimum width=3.5cm, minimum height=1cm] (summary) at (6,1) {Générer résumé};
+        \node[draw, ellipse, minimum width=3.5cm, minimum height=1cm] (quiz) at (6,-0.5) {Créer quiz};
+        \node[draw, ellipse, minimum width=3.5cm, minimum height=1cm] (mindmap) at (6,-2) {Créer mind map};
+        \node[draw, ellipse, minimum width=3.5cm, minimum height=1cm] (exam) at (6,-3.5) {Générer examen};
+        
+        % Connections
+        \draw (user) -- (auth);
+        \draw (user) -- (upload);
+        \draw (user) -- (summary);
+        \draw (user) -- (quiz);
+        \draw (user) -- (mindmap);
+        \draw (user) -- (exam);
+    \end{tikzpicture}
+    \caption{Diagramme de cas d'utilisation}
+\end{figure}
+
+\subsection{Modèle de Données}
+
+\subsubsection{Base de Données Locale (Sqflite)}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Table} & \textbf{Champ} & \textbf{Type} \\
+\hline
+\multirow{6}{*}{summaries} & id & TEXT PRIMARY KEY \\
+& uid & TEXT \\
+& title & TEXT \\
+& content & TEXT \\
+& keywords & TEXT (JSON) \\
+& created\_at & INTEGER \\
+\hline
+\multirow{5}{*}{quizzes} & id & TEXT PRIMARY KEY \\
+& summary\_id & TEXT \\
+& questions & TEXT (JSON) \\
+& score & INTEGER \\
+& created\_at & INTEGER \\
+\hline
+\end{tabular}
+\caption{Schéma de la base de données locale}
+\end{table}
+
+\subsubsection{Base de Données Cloud (Firestore)}
+
+Collections Firestore :
+\begin{itemize}
+    \item \texttt{users} : Profils utilisateurs
+    \item \texttt{summaries} : Résumés synchronisés
+    \item \texttt{quizzes} : Quiz sauvegardés
+    \item \texttt{exams} : Examens générés
+\end{itemize}
+
+\section{Flux d'application}
+
+\subsection{Flux d'Authentification}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.5cm,
+        box/.style={rectangle, draw, minimum width=3cm, minimum height=1cm, text centered},
+        decision/.style={diamond, draw, minimum width=2cm, minimum height=2cm, text centered, aspect=2},
+        arrow/.style={->, >=stealth}
+    ]
+        \node[box] (start) {Lancement App};
+        \node[box, below=of start] (splash) {Splash Screen};
+        \node[decision, below=of splash] (logged) {Connecté?};
+        \node[box, left=of logged, xshift=-1cm] (login) {Login Screen};
+        \node[box, right=of logged, xshift=1cm] (dashboard) {Dashboard};
+        
+        \draw[arrow] (start) -- (splash);
+        \draw[arrow] (splash) -- (logged);
+        \draw[arrow] (logged) -- node[above] {Non} (login);
+        \draw[arrow] (logged) -- node[above] {Oui} (dashboard);
+        \draw[arrow] (login) |- (dashboard);
+    \end{tikzpicture}
+    \caption{Flux d'authentification}
+\end{figure}
+
+\subsection{Flux de Génération de Résumé}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.3cm,
+        box/.style={rectangle, draw, minimum width=3.5cm, minimum height=0.8cm, text centered},
+        arrow/.style={->, >=stealth}
+    ]
+        \node[box] (input) {Saisie/Upload};
+        \node[box, below=of input] (extract) {Extraction Texte};
+        \node[box, below=of extract] (api) {Appel API Groq};
+        \node[box, below=of api] (parse) {Parse Réponse};
+        \node[box, below=of parse] (save) {Sauvegarde Local};
+        \node[box, below=of save] (sync) {Sync Cloud};
+        \node[box, below=of sync] (display) {Affichage};
+        
+        \draw[arrow] (input) -- (extract);
+        \draw[arrow] (extract) -- (api);
+        \draw[arrow] (api) -- (parse);
+        \draw[arrow] (parse) -- (save);
+        \draw[arrow] (save) -- (sync);
+        \draw[arrow] (sync) -- (display);
+    \end{tikzpicture}
+    \caption{Flux de génération de résumé}
+\end{figure}
+
+\subsection{Architecture en Couches}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        layer/.style={rectangle, draw, minimum width=10cm, minimum height=1.2cm, align=center},
+        node distance=0.3cm
+    ]
+        \node[layer, fill=blue!20] (presentation) {Presentation Layer\\Screens, Widgets, Providers};
+        \node[layer, fill=green!20, below=of presentation] (domain) {Domain Layer\\Models, Business Logic};
+        \node[layer, fill=yellow!20, below=of domain] (data) {Data Layer\\Repositories, Services};
+        \node[layer, fill=red!20, below=of data] (external) {External\\Firebase, Groq API, Sqflite};
+        
+        \draw[->, thick] (presentation) -- (domain);
+        \draw[->, thick] (domain) -- (data);
+        \draw[->, thick] (data) -- (external);
+    \end{tikzpicture}
+    \caption{Architecture en couches}
+\end{figure}
+
+% ============================================
+% CHAPITRE 3 : RÉALISATION
+% ============================================
+\chapter{Réalisation}
+
+\section{Environnement de travail}
+
+\subsection{Outils de développement}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Outil} & \textbf{Version} & \textbf{Usage} \\
+\hline
+Flutter SDK & 3.22.0 & Framework de développement \\
+Dart & 3.6.0 & Langage de programmation \\
+Android Studio & 2024.1 & IDE principal \\
+VS Code & 1.85 & Éditeur de code \\
+Git & 2.42 & Contrôle de version \\
+Firebase Console & - & Gestion backend \\
+Postman & 10.0 & Test API \\
+\hline
+\end{tabular}
+\caption{Environnement de développement}
+\end{table}
+
+\subsection{Stack technologique}
+
+\subsubsection{Frontend}
+\begin{itemize}
+    \item \textbf{Flutter} : Framework UI multiplateforme
+    \item \textbf{Riverpod} : Gestion d'état réactive
+    \item \textbf{GoRouter} : Navigation déclarative
+    \item \textbf{Google Fonts} : Typographie
+\end{itemize}
+
+\subsubsection{Backend \& Services}
+\begin{itemize}
+    \item \textbf{Firebase Auth} : Authentification
+    \item \textbf{Cloud Firestore} : Base de données NoSQL
+    \item \textbf{Firebase Storage} : Stockage de fichiers
+    \item \textbf{Groq API} : Intelligence artificielle (LLaMA 3.3)
+\end{itemize}
+
+\subsubsection{Persistance Locale}
+\begin{itemize}
+    \item \textbf{Sqflite} : Base de données SQLite
+    \item \textbf{Path Provider} : Gestion des chemins
+\end{itemize}
+
+\subsubsection{Utilitaires}
+\begin{itemize}
+    \item \textbf{HTTP} : Requêtes réseau
+    \item \textbf{Syncfusion PDF} : Extraction de texte PDF
+    \item \textbf{File Picker} : Sélection de fichiers
+    \item \textbf{Image Picker} : Sélection d'images
+    \item \textbf{Share Plus} : Partage de contenu
+\end{itemize}
+
+\section{Travail réalisé : interfaces de l'application}
+
+\subsection{Splash Screen}
+
+L'écran de démarrage affiche le logo de l'application avec une animation de fondu et de zoom pendant 2,5 secondes avant de rediriger vers l'écran de connexion.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Animation de fade-in
+    \item Animation de scale
+    \item Navigation automatique
+    \item Affichage du logo et du nom de l'app
+\end{itemize}
+
+\subsection{Écran de Connexion}
+
+Interface d'authentification permettant aux utilisateurs de se connecter ou de créer un compte.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Formulaire email/mot de passe
+    \item Validation des champs
+    \item Gestion des erreurs
+    \item Lien vers l'inscription
+    \item Design responsive
+\end{itemize}
+
+\subsection{Dashboard}
+
+Écran principal présentant les différentes fonctionnalités de l'application sous forme de cartes interactives.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Accès rapide aux fonctionnalités
+    \item Statistiques d'utilisation
+    \item Historique récent
+    \item Navigation vers les différents modules
+\end{itemize}
+
+\subsection{Génération de Résumé}
+
+Interface permettant de saisir du texte ou d'uploader un PDF pour générer un résumé automatique.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Saisie manuelle de texte
+    \item Upload de fichiers PDF
+    \item Extraction automatique de texte
+    \item Génération de résumé via IA
+    \item Sauvegarde automatique
+    \item Partage du résumé
+\end{itemize}
+
+\subsection{Affichage du Résumé}
+
+Écran présentant le résumé généré avec options d'interaction.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Affichage formaté du résumé
+    \item Liste des mots-clés
+    \item Génération de quiz associé
+    \item Téléchargement en PDF
+    \item Synthèse vocale (TTS)
+    \item Partage
+\end{itemize}
+
+\subsection{Quiz Interactif}
+
+Interface de quiz à choix multiples générée automatiquement à partir du résumé.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Questions à choix multiples
+    \item Timer optionnel
+    \item Feedback immédiat
+    \item Score en temps réel
+    \item Révision des réponses
+\end{itemize}
+
+\subsection{Mind Map}
+
+Visualisation hiérarchique des concepts sous forme de carte mentale.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Arborescence interactive
+    \item Zoom et navigation
+    \item Génération automatique
+    \item Export en image
+\end{itemize}
+
+\subsection{Générateur d'Examens}
+
+Interface de création d'examens personnalisés.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Choix du niveau de difficulté
+    \item Nombre de questions configurable
+    \item Score total personnalisable
+    \item Export en PDF
+\end{itemize}
+
+\subsection{Profil Utilisateur}
+
+Gestion du profil et des paramètres de l'utilisateur.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Photo de profil
+    \item Informations personnelles
+    \item Statistiques d'utilisation
+    \item Paramètres de l'application
+    \item Déconnexion
+\end{itemize}
+
+\subsection{Historique}
+
+Liste de toutes les générations précédentes avec possibilité de recherche et filtrage.
+
+\textbf{Fonctionnalités :}
+\begin{itemize}
+    \item Liste chronologique
+    \item Recherche par titre
+    \item Filtrage par type
+    \item Suppression
+    \item Accès rapide
+\end{itemize}
+
+\section{Conclusion de la réalisation}
+
+La réalisation de l'application EduGo a permis de mettre en œuvre une solution complète et fonctionnelle répondant aux objectifs fixés. L'application combine avec succès les technologies modernes (Flutter, Firebase, IA) pour offrir une expérience utilisateur optimale.
+
+Les principales réalisations incluent :
+\begin{itemize}
+    \item Interface utilisateur moderne et intuitive
+    \item Intégration réussie de l'IA pour la génération de contenu
+    \item Architecture robuste et maintenable
+    \item Mode hors ligne fonctionnel
+    \item Performance satisfaisante (< 3s pour la génération)
+\end{itemize}
+
+% ============================================
+% CONCLUSION GÉNÉRALE
+% ============================================
+\chapter{Conclusion Générale}
+
+Ce projet de développement de l'application mobile EduGo a permis de créer une solution innovante pour l'apprentissage moderne, combinant intelligence artificielle et technologies mobiles. L'application répond efficacement aux besoins identifiés en offrant des outils automatisés de génération de contenu éducatif.
+
+\section*{Synthèse des Réalisations}
+
+L'application EduGo propose un ensemble complet de fonctionnalités :
+\begin{itemize}
+    \item Génération automatique de résumés multilingues
+    \item Création de quiz adaptatifs
+    \item Visualisation de concepts via mind maps
+    \item Génération d'examens personnalisés
+    \item Extraction de texte depuis PDF
+    \item Mode hors ligne avec synchronisation cloud
+\end{itemize}
+
+\section*{Compétences Acquises}
+
+Ce projet a permis de développer de nombreuses compétences techniques :
+\begin{itemize}
+    \item Maîtrise du framework Flutter et du langage Dart
+    \item Gestion d'état avec Riverpod
+    \item Intégration d'APIs REST (Groq)
+    \item Utilisation de Firebase (Auth, Firestore, Storage)
+    \item Bases de données SQL avec Sqflite
+    \item Architecture logicielle (Clean Architecture, MVC)
+    \item Design patterns (Provider, Repository, Singleton)
+\end{itemize}
+
+\section*{Difficultés Rencontrées}
+
+Les principaux défis techniques ont été :
+\begin{itemize}
+    \item Gestion de l'asynchronisme entre API, base locale et cloud
+    \item Optimisation des prompts IA pour des résultats cohérents
+    \item Extraction fiable de texte depuis PDF
+    \item Synchronisation des données en mode hors ligne
+\end{itemize}
+
+\section*{Perspectives d'Évolution}
+
+Plusieurs améliorations peuvent être envisagées :
+
+\textbf{Fonctionnalités futures :}
+\begin{itemize}
+    \item Collaboration entre utilisateurs
+    \item Système de gamification (badges, points)
+    \item Génération de flashcards
+    \item Synthèse vocale des résumés
+    \item Support multilingue étendu
+    \item Recommandations personnalisées
+\end{itemize}
+
+\textbf{Améliorations techniques :}
+\begin{itemize}
+    \item Tests end-to-end automatisés
+    \item CI/CD pour déploiement automatique
+    \item Analytics pour suivi d'usage
+    \item Optimisation des performances
+    \item Support de plus de formats (DOCX, PPTX)
+\end{itemize}
+
+\section*{Conclusion Finale}
+
+EduGo démontre qu'il est possible de créer des applications éducatives sophistiquées tout en maintenant une architecture propre et maintenable. L'intégration de l'intelligence artificielle ouvre de nouvelles perspectives pour l'apprentissage personnalisé et adaptatif.
+
+Ce projet constitue une base solide pour de futurs développements dans le domaine de l'éducation numérique. Les technologies utilisées (Flutter, Firebase, Groq) sont au cœur de l'écosystème actuel du développement d'applications, garantissant la pertinence et la pérennité des compétences acquises.
+
+L'expérience acquise durant ce projet sera précieuse pour aborder de futurs défis techniques et contribuer à l'innovation dans le domaine de l'EdTech.
+
+% ============================================
+% WEBOGRAPHIE
+% ============================================
+\chapter*{Webographie}
+\addcontentsline{toc}{chapter}{Webographie}
+
+\begin{enumerate}
+    \item Flutter Documentation \\
+    \url{https://docs.flutter.dev/} \\
+    Consulté le 17 décembre 2024
+    
+    \item Dart Programming Language \\
+    \url{https://dart.dev/} \\
+    Consulté le 17 décembre 2024
+    
+    \item Riverpod Documentation \\
+    \url{https://riverpod.dev/} \\
+    Consulté le 17 décembre 2024
+    
+    \item Firebase Documentation \\
+    \url{https://firebase.google.com/docs} \\
+    Consulté le 17 décembre 2024
+    
+    \item Groq API Documentation \\
+    \url{https://console.groq.com/docs} \\
+    Consulté le 17 décembre 2024
+    
+    \item Meta AI - LLaMA Models \\
+    \url{https://ai.meta.com/llama/} \\
+    Consulté le 17 décembre 2024
+    
+    \item Sqflite Plugin \\
+    \url{https://pub.dev/packages/sqflite} \\
+    Consulté le 17 décembre 2024
+    
+    \item GoRouter Package \\
+    \url{https://pub.dev/packages/go_router} \\
+    Consulté le 17 décembre 2024
+    
+    \item Syncfusion Flutter PDF \\
+    \url{https://pub.dev/packages/syncfusion_flutter_pdf} \\
+    Consulté le 17 décembre 2024
+    
+    \item Material Design 3 \\
+    \url{https://m3.material.io/} \\
+    Consulté le 17 décembre 2024
+    
+    \item Stack Overflow - Flutter Community \\
+    \url{https://stackoverflow.com/questions/tagged/flutter} \\
+    Consulté régulièrement durant le projet
+    
+    \item GitHub - Flutter Samples \\
+    \url{https://github.com/flutter/samples} \\
+    Consulté le 17 décembre 2024
+\end{enumerate}
+
+\end{document}

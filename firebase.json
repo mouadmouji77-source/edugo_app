@@ -1,0 +1,43 @@
+{
+    "functions": [
+        {
+            "source": "functions",
+            "codebase": "default",
+            "ignore": [
+                "node_modules",
+                ".git",
+                "firebase-debug.log",
+                "firebase-debug.*.log"
+            ]
+        }
+    ],
+    "emulators": {
+        "functions": {
+            "host": "0.0.0.0",
+            "port": 5001
+        },
+        "ui": {
+            "enabled": true
+        }
+    },
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "edugo-a78a0",
+                    "appId": "1:728542508352:android:4e5a4a66a22c13359876a5",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "edugo-a78a0",
+                    "configurations": {
+                        "android": "1:728542508352:android:4e5a4a66a22c13359876a5",
+                        "web": "1:728542508352:web:c5ad68a1f5f5a2079876a5"
+                    }
+                }
+            }
+        }
+    }
+}
